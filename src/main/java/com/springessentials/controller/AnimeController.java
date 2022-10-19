@@ -25,7 +25,11 @@ public class AnimeController {
     }
     @GetMapping(path = "/{id}")
     public ResponseEntity<Animes> findById(@PathVariable long id){
-        return  ResponseEntity.ok(animeService.findById(id));
+        return new ResponseEntity<>(animeService.findById(id),HttpStatus.OK);
+    }
+    @PostMapping
+    public ResponseEntity<Animes> saveAnime(@RequestBody Animes anime){
+        return  new ResponseEntity<>(animeService.save(anime),HttpStatus.CREATED);
     }
 
 }
