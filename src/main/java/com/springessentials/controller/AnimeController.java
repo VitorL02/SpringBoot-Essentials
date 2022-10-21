@@ -1,10 +1,12 @@
 package com.springessentials.controller;
 
 
+import com.springessentials.dtos.AnimePostDto;
+import com.springessentials.dtos.AnimePutDto;
 import com.springessentials.models.Animes;
 import com.springessentials.service.AnimeService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +17,13 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("animes")
 @Log4j2
-@RequiredArgsConstructor //Cria construtores automaticos na hora da ingeção de dependencias
 public class AnimeController {
-    private final AnimeService animeService;
+     final AnimeService animeService;
+
+    public AnimeController(AnimeService animeService) {
+        this.animeService = animeService;
+    }
+
 
     @GetMapping
     public ResponseEntity<List<Animes>> listAnimes(){
@@ -25,11 +31,13 @@ public class AnimeController {
     }
     @GetMapping(path = "/{id}")
     public ResponseEntity<Animes> findById(@PathVariable long id){
-        return new ResponseEntity<>(animeService.findById(id),HttpStatus.OK);
+        return new ResponseEntity<>(animeService.findByIdOrThrowBadRequest(id),HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<Animes> saveAnime(@RequestBody Animes anime){
-        return  new ResponseEntity<>(animeService.save(anime),HttpStatus.CREATED);
+    public ResponseEntity<Animes> saveAnime(@RequestBody AnimePostDto animeDto){
+        var animeModel = new Animes();
+        BeanUtils.copyProperties(animeDto,animeModel);
+        return  new ResponseEntity<>(animeService.save(animeModel),HttpStatus.CREATED);
     }
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Animes> deleteAnime(@PathVariable long id){
@@ -38,8 +46,8 @@ public class AnimeController {
     }
 
     @PutMapping
-    public ResponseEntity<Animes> replace(@RequestBody Animes anime){
-        animeService.replace(anime);
+    public ResponseEntity<Animes> replace(@RequestBody AnimePutDto animePutDto){
+        animeService.replace(animePutDto);
         return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
