@@ -29,6 +29,10 @@ public class AnimeService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Anime não encontrado"));
     }
 
+    public List<Animes> findByName(String name) {
+        return  animeRepository.findByName(name);
+    }
+
     public Animes save(Animes anime) {
         return animeRepository.save(anime);
     }

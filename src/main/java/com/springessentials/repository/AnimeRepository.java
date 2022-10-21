@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface AnimeRepository extends JpaRepository<Animes,Long> {
-
+        List<Animes> findByName(String name);
 }
