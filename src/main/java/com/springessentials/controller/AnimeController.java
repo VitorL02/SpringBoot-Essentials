@@ -29,6 +29,10 @@ public class AnimeController {
     public ResponseEntity<List<Animes>> listAnimes(){
       return new ResponseEntity<>( animeService.listAll(),HttpStatus.OK);
     }
+    @GetMapping(path="/find")
+    public ResponseEntity<List<Animes>> listAnimesByName(@RequestParam  String name){
+        return new ResponseEntity<>( animeService.findByName(name),HttpStatus.OK);
+    }
     @GetMapping(path = "/{id}")
     public ResponseEntity<Animes> findById(@PathVariable long id){
         return new ResponseEntity<>(animeService.findByIdOrThrowBadRequest(id),HttpStatus.OK);
