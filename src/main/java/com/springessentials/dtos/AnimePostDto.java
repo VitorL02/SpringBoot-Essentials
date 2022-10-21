@@ -3,9 +3,10 @@ package com.springessentials.dtos;
 
 import lombok.Data;
 
-@Data
+
 public class AnimePostDto {
 
+    
     private String name;
 
     public String getName() {

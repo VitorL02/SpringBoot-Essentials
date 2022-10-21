@@ -1,10 +1,9 @@
 package com.springessentials.service;
 
-import com.springessentials.dtos.AnimePostDto;
 import com.springessentials.dtos.AnimePutDto;
+import com.springessentials.mapper.AnimeMapper;
 import com.springessentials.models.Animes;
 import com.springessentials.repository.AnimeRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,10 +11,14 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+
 public class AnimeService {
 
-    private final AnimeRepository animeRepository;
+     final AnimeRepository animeRepository;
+
+    public AnimeService(AnimeRepository animeRepository) {
+        this.animeRepository = animeRepository;
+    }
 
     public List<Animes> listAll() {
         return animeRepository.findAll();
@@ -26,8 +29,8 @@ public class AnimeService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Anime não encontrado"));
     }
 
-    public Animes save(AnimePostDto animeDto) {
-        return animeRepository.save(Animes.builder().name(animeDto.getName()).build());
+    public Animes save(Animes anime) {
+        return animeRepository.save(anime);
     }
 
     public void delete(long id) {
@@ -36,7 +39,7 @@ public class AnimeService {
 
     public void replace(AnimePutDto animePutDto) {
         Animes savedAnime = findByIdOrThrowBadRequest(animePutDto.getId());
-        Animes anime = Animes.builder().id(savedAnime.getId()).name(savedAnime.getName()).build();
+        Animes anime = AnimeMapper.INSTANCE.toAnime(animePutDto);
         animeRepository.save(anime);
     }
 }
